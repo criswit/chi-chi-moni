@@ -1,4 +1,4 @@
-package api
+package aws
 
 import (
 	"context"
@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
+	"github.com/criswit/chi-chi-moni/api"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -61,7 +62,7 @@ func NewMockSecretsManagerClient() *MockSecretsManagerClient {
 func TestSecretsManagerClient_StoreAccessToken(t *testing.T) {
 	ctx := context.Background()
 	secretName := "test-secret"
-	token := AccessToken{
+	token := api.AccessToken{
 		Username: "testuser",
 		Password: "testpass",
 		Url:      "test.example.com",
@@ -128,7 +129,7 @@ func TestSecretsManagerClient_StoreAccessToken(t *testing.T) {
 func TestSecretsManagerClient_RetrieveAccessToken(t *testing.T) {
 	ctx := context.Background()
 	secretName := "test-secret"
-	token := AccessToken{
+	token := api.AccessToken{
 		Username: "testuser",
 		Password: "testpass",
 		Url:      "test.example.com",
@@ -140,7 +141,7 @@ func TestSecretsManagerClient_RetrieveAccessToken(t *testing.T) {
 	tests := []struct {
 		name    string
 		setup   func(*MockSecretsManagerAPI)
-		want    AccessToken
+		want    api.AccessToken
 		wantErr bool
 	}{
 		{
@@ -161,7 +162,7 @@ func TestSecretsManagerClient_RetrieveAccessToken(t *testing.T) {
 			setup: func(m *MockSecretsManagerAPI) {
 				m.On("GetSecretValue", ctx, mock.Anything).Return(nil, assert.AnError)
 			},
-			want:    AccessToken{},
+			want:    api.AccessToken{},
 			wantErr: true,
 		},
 		{
@@ -171,7 +172,7 @@ func TestSecretsManagerClient_RetrieveAccessToken(t *testing.T) {
 					SecretString: nil,
 				}, nil)
 			},
-			want:    AccessToken{},
+			want:    api.AccessToken{},
 			wantErr: true,
 		},
 	}
@@ -180,7 +181,7 @@ func TestSecretsManagerClient_RetrieveAccessToken(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			// Test JSON unmarshaling logic
 			if !tt.wantErr && tt.name == "successful retrieval" {
-				var retrievedToken AccessToken
+				var retrievedToken api.AccessToken
 				err := json.Unmarshal(tokenJSON, &retrievedToken)
 				assert.NoError(t, err)
 				assert.Equal(t, token, retrievedToken)
@@ -190,7 +191,7 @@ func TestSecretsManagerClient_RetrieveAccessToken(t *testing.T) {
 }
 
 func TestAccessToken_JSONMarshaling(t *testing.T) {
-	token := AccessToken{
+	token := api.AccessToken{
 		Username: "testuser",
 		Password: "testpass",
 		Url:      "test.example.com",
@@ -202,7 +203,7 @@ func TestAccessToken_JSONMarshaling(t *testing.T) {
 	assert.NotEmpty(t, data)
 
 	// Test unmarshaling
-	var unmarshaled AccessToken
+	var unmarshaled api.AccessToken
 	err = json.Unmarshal(data, &unmarshaled)
 	assert.NoError(t, err)
 	assert.Equal(t, token, unmarshaled)

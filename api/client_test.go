@@ -96,6 +96,11 @@ func TestSimpleFinClient_GetAccounts_Success(t *testing.T) {
 			t.Errorf("Expected path %s, got %s", expectedPath, r.URL.Path)
 		}
 
+		// Check default query parameter
+		if r.URL.Query().Get("balances-only") != "0" {
+			t.Errorf("Expected balances-only=0, got %s", r.URL.Query().Get("balances-only"))
+		}
+
 		// Verify basic auth is set (this will be handled by the RoundTripper)
 		username, password, ok := r.BasicAuth()
 		if !ok {
@@ -138,8 +143,8 @@ func TestSimpleFinClient_GetAccounts_Success(t *testing.T) {
 		Base:     serverClient.Transport,
 	}
 
-	// Test GetAccounts
-	response, err := client.GetAccounts()
+	// Test GetAccounts with nil options
+	response, err := client.GetAccounts(nil)
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
@@ -180,6 +185,118 @@ func TestSimpleFinClient_GetAccounts_Success(t *testing.T) {
 	}
 }
 
+func TestSimpleFinClient_GetAccounts_WithOptions(t *testing.T) {
+	testCases := []struct {
+		name        string
+		options     *GetAccountsOptions
+		expectedURL string
+	}{
+		{
+			name:        "nil options",
+			options:     nil,
+			expectedURL: "/accounts?balances-only=0",
+		},
+		{
+			name:        "empty options",
+			options:     &GetAccountsOptions{},
+			expectedURL: "/accounts?balances-only=0",
+		},
+		{
+			name: "with start date",
+			options: &GetAccountsOptions{
+				StartDate: func() *int64 { v := int64(1640995200); return &v }(),
+			},
+			expectedURL: "/accounts?balances-only=0&start-date=1640995200",
+		},
+		{
+			name: "with end date",
+			options: &GetAccountsOptions{
+				EndDate: func() *int64 { v := int64(1641081600); return &v }(),
+			},
+			expectedURL: "/accounts?balances-only=0&end-date=1641081600",
+		},
+		{
+			name: "with pending",
+			options: &GetAccountsOptions{
+				Pending: true,
+			},
+			expectedURL: "/accounts?balances-only=0&pending=1",
+		},
+		{
+			name: "with account IDs",
+			options: &GetAccountsOptions{
+				AccountIDs: []string{"acc1", "acc2"},
+			},
+			expectedURL: "/accounts?account=acc1&account=acc2&balances-only=0",
+		},
+		{
+			name: "with balances only",
+			options: &GetAccountsOptions{
+				BalancesOnly: true,
+			},
+			expectedURL: "/accounts?balances-only=1",
+		},
+		{
+			name: "with all options",
+			options: &GetAccountsOptions{
+				StartDate:    func() *int64 { v := int64(1640995200); return &v }(),
+				EndDate:      func() *int64 { v := int64(1641081600); return &v }(),
+				Pending:      true,
+				AccountIDs:   []string{"acc1", "acc2", "acc3"},
+				BalancesOnly: true,
+			},
+			expectedURL: "/accounts?account=acc1&account=acc2&account=acc3&balances-only=1&end-date=1641081600&pending=1&start-date=1640995200",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			mockServer := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				// Verify the full URL matches expectations
+				fullURL := r.URL.Path
+				if r.URL.RawQuery != "" {
+					fullURL += "?" + r.URL.RawQuery
+				}
+				
+				if fullURL != tc.expectedURL {
+					t.Errorf("Expected URL %s, got %s", tc.expectedURL, fullURL)
+				}
+
+				// Return empty successful response
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusOK)
+				w.Write([]byte(`{"errors": [], "accounts": []}`))
+			}))
+			defer mockServer.Close()
+
+			serverURL := strings.TrimPrefix(mockServer.URL, "https://")
+			accessToken := AccessToken{
+				Username: "testuser",
+				Password: "testpass",
+				Url:      serverURL,
+			}
+
+			client, err := NewSimpleFinClient(accessToken)
+			if err != nil {
+				t.Fatalf("Expected no error creating client, got %v", err)
+			}
+
+			// Use the server's client but preserve our RoundTripper for auth
+			serverClient := mockServer.Client()
+			client.client.Transport = &SimpleFinRoundTripper{
+				username: "testuser",
+				password: "testpass",
+				Base:     serverClient.Transport,
+			}
+
+			_, err = client.GetAccounts(tc.options)
+			if err != nil {
+				t.Fatalf("Expected no error, got %v", err)
+			}
+		})
+	}
+}
+
 func TestSimpleFinClient_GetAccounts_HTTPError(t *testing.T) {
 	// Create mock server that returns an error
 	mockServer := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -209,7 +326,7 @@ func TestSimpleFinClient_GetAccounts_HTTPError(t *testing.T) {
 		Base:     serverClient.Transport,
 	}
 
-	_, err = client.GetAccounts()
+	_, err = client.GetAccounts(nil)
 	if err == nil {
 		t.Error("Expected error for HTTP error response, got nil")
 	}
@@ -245,7 +362,7 @@ func TestSimpleFinClient_GetAccounts_InvalidJSON(t *testing.T) {
 		Base:     serverClient.Transport,
 	}
 
-	_, err = client.GetAccounts()
+	_, err = client.GetAccounts(nil)
 	if err == nil {
 		t.Error("Expected error for invalid JSON, got nil")
 	}
@@ -281,7 +398,7 @@ func TestSimpleFinClient_GetAccounts_EmptyResponse(t *testing.T) {
 		Base:     serverClient.Transport,
 	}
 
-	response, err := client.GetAccounts()
+	response, err := client.GetAccounts(nil)
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
@@ -309,7 +426,7 @@ func TestSimpleFinClient_GetAccounts_NetworkError(t *testing.T) {
 		t.Fatalf("Expected no error creating client, got %v", err)
 	}
 
-	_, err = client.GetAccounts()
+	_, err = client.GetAccounts(nil)
 	if err == nil {
 		t.Error("Expected network error, got nil")
 	}
@@ -356,7 +473,7 @@ func TestSimpleFinClient_GetAccounts_URLConstruction(t *testing.T) {
 		Base:     serverClient.Transport,
 	}
 
-	_, err = client.GetAccounts()
+	_, err = client.GetAccounts(nil)
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
@@ -431,7 +548,7 @@ func TestSimpleFinClient_GetAccounts_WithComplexResponse(t *testing.T) {
 		Base:     serverClient.Transport,
 	}
 
-	response, err := client.GetAccounts()
+	response, err := client.GetAccounts(nil)
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}

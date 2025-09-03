@@ -1,4 +1,4 @@
-package api
+package aws
 
 import (
 	"context"
@@ -10,11 +10,15 @@ import (
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager"
 	"github.com/aws/aws-sdk-go-v2/service/secretsmanager/types"
+	"github.com/aws/aws-sdk-go-v2/service/sts"
+	"github.com/criswit/chi-chi-moni/api"
 )
 
 // SecretsManagerClient wraps AWS Secrets Manager operations
 type SecretsManagerClient struct {
-	client *secretsmanager.Client
+	client    *secretsmanager.Client
+	ssoClient *SSOClient
+	config    aws.Config
 }
 
 // NewSecretsManagerClient creates a new Secrets Manager client
@@ -26,6 +30,7 @@ func NewSecretsManagerClient(ctx context.Context) (*SecretsManagerClient, error)
 
 	return &SecretsManagerClient{
 		client: secretsmanager.NewFromConfig(cfg),
+		config: cfg,
 	}, nil
 }
 
@@ -33,11 +38,12 @@ func NewSecretsManagerClient(ctx context.Context) (*SecretsManagerClient, error)
 func NewSecretsManagerClientWithConfig(cfg aws.Config) *SecretsManagerClient {
 	return &SecretsManagerClient{
 		client: secretsmanager.NewFromConfig(cfg),
+		config: cfg,
 	}
 }
 
 // StoreAccessToken stores an AccessToken in AWS Secrets Manager
-func (sm *SecretsManagerClient) StoreAccessToken(ctx context.Context, secretName string, token AccessToken) error {
+func (sm *SecretsManagerClient) StoreAccessToken(ctx context.Context, secretName string, token api.AccessToken) error {
 	// Convert AccessToken to JSON
 	tokenJSON, err := json.Marshal(token)
 	if err != nil {
@@ -67,24 +73,24 @@ func (sm *SecretsManagerClient) StoreAccessToken(ctx context.Context, secretName
 }
 
 // RetrieveAccessToken retrieves an AccessToken from AWS Secrets Manager
-func (sm *SecretsManagerClient) RetrieveAccessToken(ctx context.Context, secretName string) (AccessToken, error) {
+func (sm *SecretsManagerClient) RetrieveAccessToken(ctx context.Context, secretName string) (api.AccessToken, error) {
 	input := &secretsmanager.GetSecretValueInput{
 		SecretId: aws.String(secretName),
 	}
 
 	result, err := sm.client.GetSecretValue(ctx, input)
 	if err != nil {
-		return AccessToken{}, fmt.Errorf("failed to get secret value: %w", err)
+		return api.AccessToken{}, fmt.Errorf("failed to get secret value: %w", err)
 	}
 
 	if result.SecretString == nil {
-		return AccessToken{}, fmt.Errorf("secret string is nil")
+		return api.AccessToken{}, fmt.Errorf("secret string is nil")
 	}
 
-	var token AccessToken
+	var token api.AccessToken
 	err = json.Unmarshal([]byte(*result.SecretString), &token)
 	if err != nil {
-		return AccessToken{}, fmt.Errorf("failed to unmarshal access token: %w", err)
+		return api.AccessToken{}, fmt.Errorf("failed to unmarshal access token: %w", err)
 	}
 
 	return token, nil
@@ -136,4 +142,66 @@ func (sm *SecretsManagerClient) ListSecrets(ctx context.Context, prefix string) 
 	}
 
 	return secretNames, nil
+}
+
+// NewSecretsManagerClientWithSSO creates a new Secrets Manager client with SSO support
+func NewSecretsManagerClientWithSSO(ctx context.Context, ssoClient *SSOClient) (*SecretsManagerClient, error) {
+	// Check credential status
+	status, err := ssoClient.CheckCredentialStatus(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to check credential status: %w", err)
+	}
+
+	// If credentials are expired or not found, initiate SSO login
+	if status == CredentialStatusExpired || status == CredentialStatusNotFound {
+		fmt.Println("AWS credentials expired or not found. Initiating SSO login...")
+		authResult, err := ssoClient.InitiateLoginFlow(ctx)
+		if err != nil {
+			return nil, fmt.Errorf("SSO login failed: %w", err)
+		}
+		if !authResult.Success {
+			return nil, fmt.Errorf("SSO authentication failed: %w", authResult.Error)
+		}
+
+		return &SecretsManagerClient{
+			client:    secretsmanager.NewFromConfig(authResult.Config),
+			ssoClient: ssoClient,
+			config:    authResult.Config,
+		}, nil
+	}
+
+	// Credentials are valid, create config with SSO
+	cfg, err := ssoClient.CreateConfigWithSSO(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create config with SSO: %w", err)
+	}
+
+	return &SecretsManagerClient{
+		client:    secretsmanager.NewFromConfig(cfg),
+		ssoClient: ssoClient,
+		config:    cfg,
+	}, nil
+}
+
+// ValidateCredentials checks if current AWS credentials are valid
+func (sm *SecretsManagerClient) ValidateCredentials(ctx context.Context) error {
+	stsClient := sts.NewFromConfig(sm.config)
+	_, err := stsClient.GetCallerIdentity(ctx, &sts.GetCallerIdentityInput{})
+	if err != nil {
+		// If SSO client is available, try to refresh credentials
+		if sm.ssoClient != nil {
+			status, checkErr := sm.ssoClient.CheckCredentialStatus(ctx)
+			if checkErr == nil && (status == CredentialStatusExpired || status == CredentialStatusNotFound) {
+				authResult, loginErr := sm.ssoClient.InitiateLoginFlow(ctx)
+				if loginErr == nil && authResult.Success {
+					// Update the client with new credentials
+					sm.config = authResult.Config
+					sm.client = secretsmanager.NewFromConfig(authResult.Config)
+					return nil
+				}
+			}
+		}
+		return fmt.Errorf("invalid AWS credentials: %w", err)
+	}
+	return nil
 }

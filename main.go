@@ -1,51 +1,82 @@
 package main
 
 import (
-	"fmt"
+	"context"
+	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/criswit/chi-chi-moni/api"
+	"github.com/criswit/chi-chi-moni/aws"
+	"github.com/criswit/chi-chi-moni/db"
+	"github.com/google/uuid"
+	_ "github.com/mattn/go-sqlite3"
 )
 
+const ssoProfile = "monkstorage"
+const accessTokenSecretName = "monk-monies"
+const dbFilePath = "data/monk.db"
+
+func getAccessToken() (accessToken api.AccessToken, err error) {
+	ssoClient, err := aws.NewSSOClient(ssoProfile, "us-east-1")
+	if err != nil {
+		return api.AccessToken{}, err
+	}
+	secretClient, err := aws.NewSecretsManagerClientWithSSO(context.Background(), ssoClient)
+	if err != nil {
+		return api.AccessToken{}, err
+	}
+	return secretClient.RetrieveAccessToken(context.Background(), accessTokenSecretName)
+}
+
+func getDbFilePath() (string, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(homeDir, dbFilePath), nil
+}
+
 func main() {
-	// Check if setup token is provided as command-line argument
-	if len(os.Args) < 2 {
-		fmt.Fprintf(os.Stderr, "Usage: %s <setup-token>\n", os.Args[0])
-		fmt.Fprintf(os.Stderr, "Example: %s aHR0cHM6Ly9iZXRhLWJyaWRnZS5zaW1wbGVmaW4ub3JnL3NpbXBsZWZpbi9jbGFpbS9...\n", os.Args[0])
-		os.Exit(1)
-	}
-
-	setupToken := os.Args[1]
-
-	resolver := api.NewAccessTokenResolver(setupToken)
-	accessToken, err := resolver.Resolve()
+	accessToken, err := getAccessToken()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error resolving access token: %v\n", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
-
-	client, err := api.NewSimpleFinClient(accessToken)
+	finClient, err := api.NewSimpleFinClient(accessToken)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error creating client: %v\n", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
-	accounts, err := client.GetAccounts()
+	dbPath, err := getDbFilePath()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error getting accounts: %v\n", err)
-		os.Exit(1)
+		log.Fatal(err)
 	}
 
-	// Display account information
-	fmt.Printf("Found %d account(s):\n", len(accounts.Accounts))
-	for i, account := range accounts.Accounts {
-		fmt.Printf("%d. Account: %s\n", i+1, account.Name)
-		fmt.Printf("   ID: %s\n", account.ID)
-		fmt.Printf("   Balance: %s %s\n", account.Balance, account.Currency)
-		fmt.Printf("   Organization: %s\n", account.Org.Name)
-		if len(account.Transactions) > 0 {
-			fmt.Printf("   Recent transactions: %d\n", len(account.Transactions))
+	dbClient, err := db.NewDatabaseClient(dbPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	jobUuid := uuid.New()
+
+	getAccountsResp, err := finClient.GetAccounts(&api.GetAccountsOptions{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, account := range getAccountsResp.Accounts {
+		exists, err := dbClient.DoesBankAccountExist(account.ID)
+		if err != nil {
+			log.Fatal(err)
 		}
-		fmt.Println()
+		if !exists {
+			if err = dbClient.PutBankAccount(account); err != nil {
+				log.Fatal(err)
+			}
+		}
+
+		if err := dbClient.PutAccountBalance(account.ID, jobUuid.String(), account.Balance); err != nil {
+			log.Fatal(err)
+		}
 	}
 }
