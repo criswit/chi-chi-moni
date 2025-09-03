@@ -1,0 +1,107 @@
+# Chi-Chi-Moni Documentation and Testing Enhancement PRD
+
+## Product Overview
+
+Chi-Chi-Moni has evolved from a simple CLI tool into a sophisticated automated financial data collection service. The current implementation uses AWS SSO for authentication, AWS Secrets Manager for credential storage, SimpleFIN API for data collection, and SQLite for local data persistence. However, the documentation (README.md) still describes the old CLI tool, and test coverage is severely lacking (45.2% in API package, 0% in database and model packages).
+
+## Objectives
+
+1. **Complete README.md Rewrite**: Transform documentation from CLI tool description to automated service architecture
+2. **Comprehensive Test Coverage**: Achieve near-100% test coverage across all packages
+3. **Documentation Accuracy**: Ensure all documented features match current implementation
+4. **Development Guidance**: Provide clear setup, configuration, and troubleshooting instructions
+
+## Current State Analysis
+
+**Architecture Gap**: README describes CLI tool, but codebase is automated service
+**Test Coverage Gap**: Claims 94.6% coverage, actual is 45.2% API, 0% db/model
+**Documentation Gap**: Missing AWS SSO setup, Secrets Manager integration, database schema
+**Dependency Gap**: README doesn't reflect current AWS SDK, sqlx, cobra dependencies
+
+## Technical Requirements
+
+### README.md Complete Rewrite
+- Update project description from CLI tool to automated service
+- Document AWS SSO authentication requirements and setup process
+- Document AWS Secrets Manager integration and credential management
+- Document SQLite database storage, schema, and operations
+- Update installation instructions for service deployment
+- Replace CLI usage examples with service configuration examples
+- Document current package structure and responsibilities
+- Correct test coverage claims and provide testing guidance
+- Update dependencies list with current AWS SDK, sqlx, cobra versions
+- Add comprehensive troubleshooting section for AWS authentication
+
+### Database Package Testing (0% Coverage)
+- NewDatabaseClient constructor validation and error handling
+- Database connection initialization and schema validation
+- PutBankAccount operations with duplicate handling
+- PutAccountBalance and PutBankAccountBalance operations
+- DoesBankAccountExist query operations with error scenarios
+- Close method resource cleanup verification
+- Concurrent access safety testing
+- Database migration and schema evolution testing
+
+### Model Package Testing (0% Coverage)
+- Account struct JSON marshaling and unmarshaling
+- GetAccountsResponse structure validation
+- Data validation and constraint testing for all model types
+- Model relationship integrity verification
+- Error handling for malformed data inputs
+- Additional model structures for transactions, organizations, holdings
+
+### API Package Enhanced Testing
+- AWS Secrets Manager integration error scenarios
+- SSO client authentication flow edge cases
+- Access token resolution complex scenarios
+- SimpleFinClient error handling improvements
+- SSOClient device authorization flow testing
+- SecretsManagerClient credential operations testing
+
+### Main Package Testing (0% Coverage)
+- Service initialization and configuration validation
+- getAccessToken helper function testing
+- getDbFilePath helper function testing
+- AWS credential validation workflows
+- Database initialization and error handling
+- Graceful shutdown and resource cleanup
+
+### Integration Testing
+- End-to-end service workflow from SSO to data persistence
+- AWS SSO authentication integration scenarios
+- Secrets Manager credential lifecycle testing
+- SimpleFIN API integration with mock and real responses
+- Database persistence verification across service restarts
+- Error recovery and retry mechanisms
+
+## Success Criteria
+
+1. **Documentation Accuracy**: README.md accurately reflects current automated service architecture
+2. **Test Coverage**: Achieve >90% test coverage across all packages (db, model, api, main)
+3. **Setup Clarity**: New developers can set up and run the service following README instructions
+4. **Error Handling**: Comprehensive error scenarios documented and tested
+5. **AWS Integration**: Clear guidance for AWS SSO and Secrets Manager setup
+6. **Database Operations**: All database operations thoroughly tested and documented
+
+## Implementation Priority
+
+1. **High Priority**: README.md rewrite, database package testing, model package testing
+2. **Medium Priority**: Enhanced API package testing, main package testing
+3. **Low Priority**: Integration testing, advanced error scenarios, performance testing
+
+## Dependencies and Constraints
+
+- Must maintain backward compatibility with existing data
+- AWS credentials and permissions required for testing
+- SimpleFIN API access for integration testing
+- SQLite database for local development and testing
+- Current dependency versions: AWS SDK v2, sqlx v1.4.0, testify v1.11.1
+
+## Timeline and Deliverables
+
+**Phase 1**: Complete README.md rewrite and database package testing
+**Phase 2**: Model package testing and enhanced API testing
+**Phase 3**: Main package testing and integration scenarios
+**Phase 4**: Final validation and documentation consistency check
+
+This comprehensive enhancement will transform chi-chi-moni from a poorly documented project with inadequate testing into a well-documented, thoroughly tested automated financial service.

@@ -1,0 +1,1058 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Implement Enhanced CLI Structure with Cobra Framework",
+        "description": "Integrate the Cobra framework to improve command structure and organization for the CLI tool.",
+        "details": "1. Initialize a new Go module for the project\n2. Add Cobra as a dependency using `go get github.com/spf13/cobra`\n3. Create a root command structure with proper description, version, and usage information\n4. Implement subcommand architecture for account, transaction, and organization operations\n5. Set up command flags and arguments for each subcommand\n6. Implement help documentation for all commands\n7. Create a consistent error handling pattern across commands\n8. Set up command aliases for common operations\n9. Ensure backward compatibility with existing command patterns\n10. Implement command completion scripts generation",
+        "testStrategy": "1. Unit tests for each command's flag parsing and validation\n2. Integration tests verifying command execution flow\n3. Test help output and documentation accuracy\n4. Test error scenarios and verify appropriate error messages\n5. Test command aliases and ensure they work as expected\n6. Verify backward compatibility with existing command patterns",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Develop Configuration Management System",
+        "description": "Create a configuration system to store and manage user tokens, preferences, and settings using YAML/JSON files.",
+        "details": "1. Add Viper as a dependency using `go get github.com/spf13/viper`\n2. Define configuration file structure with support for tokens, output preferences, and API settings\n3. Implement cross-platform configuration file paths (respecting XDG standards on Linux, appropriate locations on macOS and Windows)\n4. Create functions to read, write, and update configuration\n5. Implement configuration merging (defaults, config file, command line flags)\n6. Add support for environment variables as configuration source\n7. Implement secure storage for API tokens with appropriate encryption\n8. Create configuration initialization command\n9. Add configuration validation logic\n10. Implement configuration backup and restore functionality",
+        "testStrategy": "1. Unit tests for configuration reading and writing\n2. Tests for configuration merging priority (CLI flags should override file settings)\n3. Cross-platform tests for config file locations\n4. Security tests for token storage\n5. Test configuration validation with valid and invalid inputs\n6. Test environment variable overrides",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Implement Local Storage and Caching System",
+        "description": "Create a local storage system for caching account data, transactions, and other information with encryption support.",
+        "details": "1. Add SQLite dependency using `go get github.com/mattn/go-sqlite3`\n2. Design database schema for accounts, transactions, and organizations\n3. Implement database initialization and migration system\n4. Create data access layer with CRUD operations for all entities\n5. Implement encryption for sensitive data using AES-256\n6. Add TTL (Time To Live) support for cached data\n7. Implement cache invalidation and refresh mechanisms\n8. Create background process for automatic cache updates\n9. Add cache statistics and management commands\n10. Implement database file location management across platforms\n11. Add data integrity checks and automatic recovery",
+        "testStrategy": "1. Unit tests for database operations\n2. Integration tests for the complete caching flow\n3. Performance tests for read/write operations\n4. Security tests for data encryption\n5. Test cache invalidation and refresh mechanisms\n6. Test error recovery scenarios\n7. Test with large datasets to ensure performance",
+        "priority": "high",
+        "dependencies": [
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Enhance Error Handling and User Feedback",
+        "description": "Improve error handling with detailed messages, suggestions, and appropriate exit codes for better user experience.",
+        "details": "1. Create a centralized error handling system\n2. Define error categories (API errors, configuration errors, permission errors, etc.)\n3. Implement detailed error messages with actionable suggestions\n4. Add color-coded output for errors using a library like `github.com/fatih/color`\n5. Implement appropriate exit codes for different error types\n6. Add verbose logging options for debugging\n7. Create a system for error reporting and telemetry (opt-in)\n8. Implement progress indicators for long-running operations\n9. Add retry logic with backoff for transient errors\n10. Create user-friendly error documentation",
+        "testStrategy": "1. Unit tests for each error category\n2. Test appropriate exit codes for different error scenarios\n3. Test color output in different terminal environments\n4. Test progress indicators for long operations\n5. Test retry logic with simulated failures\n6. Verify error messages are user-friendly and actionable",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Implement Multiple Output Formats",
+        "description": "Add support for JSON, CSV, and XML output formats for integration with other tools and systems.",
+        "details": "1. Design a modular output formatting system\n2. Implement JSON output using the standard library\n3. Add CSV output with proper escaping and header support\n4. Implement XML output with appropriate schema\n5. Create a unified interface for all formatters\n6. Add output format selection via command line flags and configuration\n7. Implement pretty-printing options for human-readable output\n8. Add support for output redirection to files\n9. Implement custom templates for output formatting\n10. Add output validation to ensure correctness",
+        "testStrategy": "1. Unit tests for each output format\n2. Test output against schema validation\n3. Test with various data types and edge cases (special characters, large numbers)\n4. Test file output and redirection\n5. Test custom templates with various inputs\n6. Benchmark performance of different output formats",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Develop Filtering and Search Capabilities",
+        "description": "Implement filtering and search functionality for accounts, transactions, and organizations based on various criteria.",
+        "details": "1. Design a query language for filtering operations\n2. Implement account filtering by type, balance range, and organization\n3. Add transaction filtering by date range, amount, description, and category\n4. Implement full-text search across transaction descriptions\n5. Add support for complex boolean expressions (AND, OR, NOT)\n6. Implement sorting options for all data types\n7. Create pagination support for large result sets\n8. Add saved filters in configuration\n9. Implement filter suggestions based on data patterns\n10. Create filter validation and error reporting",
+        "testStrategy": "1. Unit tests for each filter type\n2. Test complex boolean expressions\n3. Performance tests with large datasets\n4. Test pagination with various page sizes\n5. Test sorting with different criteria\n6. Test saved filters from configuration\n7. Test filter suggestions with sample data",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          5
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Implement Batch Processing for Multiple Accounts",
+        "description": "Add support for processing multiple account tokens in parallel to improve performance and enable batch operations.",
+        "details": "1. Design a concurrent processing system using goroutines\n2. Implement worker pool pattern for API requests\n3. Add rate limiting to respect API constraints\n4. Create batch command structure for multiple accounts\n5. Implement progress tracking for batch operations\n6. Add error handling specific to batch processing\n7. Create aggregation functions for batch results\n8. Implement batch configuration in settings\n9. Add support for batch export of results\n10. Implement timeout and cancellation support",
+        "testStrategy": "1. Unit tests for worker pool implementation\n2. Test rate limiting functionality\n3. Test with simulated slow API responses\n4. Test error handling in concurrent operations\n5. Test aggregation of batch results\n6. Performance tests with various batch sizes\n7. Test cancellation and timeout scenarios",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Create Reporting and Analytics System",
+        "description": "Develop a reporting system to generate financial summaries, trends, and analytics from account data.",
+        "details": "1. Design report templates for common financial analyses\n2. Implement account summary reports (totals, averages, min/max)\n3. Add transaction categorization for spending analysis\n4. Create time-series analysis for balance trends\n5. Implement income vs. expense reporting\n6. Add support for custom report definitions\n7. Create scheduled report generation\n8. Implement report export in multiple formats\n9. Add visualization data for external tools\n10. Create report caching for performance",
+        "testStrategy": "1. Unit tests for each report type\n2. Test report calculations with known datasets\n3. Test custom report definitions\n4. Test report caching and invalidation\n5. Test scheduled report generation\n6. Test report export in all supported formats\n7. Benchmark report generation performance",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Implement Interactive TUI Mode",
+        "description": "Create a Terminal User Interface (TUI) for interactive exploration of financial data with navigation and visualization.",
+        "details": "1. Add dependency on a TUI library like `github.com/rivo/tview` or `github.com/gizak/termui`\n2. Design the layout for the interactive interface\n3. Implement navigation between accounts, transactions, and reports\n4. Create interactive filtering and search\n5. Add data visualization components (charts, graphs)\n6. Implement keyboard shortcuts for common operations\n7. Create context-sensitive help\n8. Add color themes and customization\n9. Implement responsive design for different terminal sizes\n10. Create animation for data updates and transitions",
+        "testStrategy": "1. Unit tests for UI components\n2. Integration tests for navigation flows\n3. Test keyboard shortcuts and interactions\n4. Test with various terminal sizes and capabilities\n5. Test color themes in different terminal environments\n6. Test with screen readers and accessibility tools\n7. User testing with sample workflows",
+        "priority": "low",
+        "dependencies": [
+          3,
+          6,
+          8
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Develop Data Export System",
+        "description": "Create a system to export financial data to popular formats including QIF, OFX, and CSV for use with other financial tools.",
+        "details": "1. Research specifications for QIF, OFX, and other financial formats\n2. Implement QIF export with transaction categorization\n3. Create OFX export with full account details\n4. Enhance CSV export with financial software compatibility\n5. Add support for custom export templates\n6. Implement export filtering and date range selection\n7. Create batch export for multiple accounts\n8. Add export scheduling and automation\n9. Implement export validation against format specifications\n10. Create export profiles for different financial software",
+        "testStrategy": "1. Unit tests for each export format\n2. Validation tests against format specifications\n3. Test import of exported files in popular financial software\n4. Test custom export templates\n5. Test filtering and date range selection\n6. Test batch export with multiple accounts\n7. Test scheduled exports",
+        "priority": "medium",
+        "dependencies": [
+          5,
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Implement Self-Update Mechanism",
+        "description": "Create a self-update system to allow the CLI tool to update itself to the latest version.",
+        "details": "1. Research self-update mechanisms for Go applications\n2. Implement version checking against a release repository\n3. Create secure download and verification of updates\n4. Implement atomic update process with rollback capability\n5. Add update notifications in regular command output\n6. Create update configuration options (auto-update, notification only)\n7. Implement update channels (stable, beta, development)\n8. Add update logging and telemetry\n9. Create platform-specific update mechanisms\n10. Implement plugin updates alongside core updates",
+        "testStrategy": "1. Unit tests for version checking\n2. Test update process with various versions\n3. Test rollback functionality\n4. Security tests for update verification\n5. Test update notifications\n6. Test with different update channels\n7. Test platform-specific update mechanisms",
+        "priority": "low",
+        "dependencies": [
+          2,
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Enhance SimpleFIN API Client",
+        "description": "Improve the SimpleFIN API wrapper with retry logic, rate limiting, and extended error handling.",
+        "details": "1. Analyze SimpleFIN API documentation for rate limits and error codes\n2. Implement exponential backoff retry logic\n3. Add rate limiting to prevent API throttling\n4. Enhance error handling with detailed API error information\n5. Implement request/response logging for debugging\n6. Add support for API versioning\n7. Create mock API responses for testing\n8. Implement connection pooling for performance\n9. Add metrics collection for API usage\n10. Create API client configuration options",
+        "testStrategy": "1. Unit tests for API client methods\n2. Test retry logic with simulated failures\n3. Test rate limiting functionality\n4. Test with mock API responses\n5. Test error handling for various API errors\n6. Performance tests for concurrent API requests\n7. Test metrics collection accuracy",
+        "priority": "high",
+        "dependencies": [
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Implement Comprehensive Logging System",
+        "description": "Create a structured logging system with configurable levels, outputs, and formats for debugging and auditing.",
+        "details": "1. Add dependency on a structured logging library like `github.com/rs/zerolog` or `go.uber.org/zap`\n2. Implement log levels (debug, info, warn, error, fatal)\n3. Create log outputs (console, file, syslog)\n4. Add log rotation for file outputs\n5. Implement structured logging with consistent fields\n6. Create context-aware logging with request IDs\n7. Add sensitive data masking for security\n8. Implement log filtering and search\n9. Create log configuration in settings\n10. Add performance logging for slow operations",
+        "testStrategy": "1. Unit tests for logging at different levels\n2. Test log output formats\n3. Test log rotation functionality\n4. Test sensitive data masking\n5. Test log filtering and search\n6. Performance tests for logging overhead\n7. Test log configuration changes",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          4
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Create Plugin System for Extensibility",
+        "description": "Develop a plugin architecture to allow users to extend the CLI tool with custom commands and functionality.",
+        "details": "1. Research plugin architectures for Go applications\n2. Design plugin interface and contract\n3. Implement plugin discovery and loading\n4. Create plugin command registration system\n5. Add plugin configuration management\n6. Implement plugin versioning and compatibility checking\n7. Create plugin documentation generation\n8. Add plugin repository and sharing capabilities\n9. Implement plugin security and sandboxing\n10. Create example plugins for common extensions",
+        "testStrategy": "1. Unit tests for plugin loading and execution\n2. Test plugin discovery in various locations\n3. Test plugin command registration\n4. Test plugin configuration management\n5. Test plugin versioning and compatibility\n6. Security tests for plugin sandboxing\n7. Test with example plugins",
+        "priority": "low",
+        "dependencies": [
+          1,
+          2,
+          13
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Implement Performance Optimization and Profiling",
+        "description": "Optimize the CLI tool for performance, memory usage, and startup time with profiling and benchmarking.",
+        "details": "1. Set up profiling tools for CPU and memory analysis\n2. Create benchmark suite for core operations\n3. Implement lazy loading for configuration and cache\n4. Optimize startup time for common commands\n5. Add memory pooling for frequent allocations\n6. Implement response streaming for large datasets\n7. Create performance monitoring and reporting\n8. Optimize database queries and indexing\n9. Implement caching strategies for frequent operations\n10. Add performance configuration options",
+        "testStrategy": "1. Benchmark tests for core operations\n2. Memory usage tests with various workloads\n3. Startup time measurements for different commands\n4. Test streaming with large datasets\n5. Test caching effectiveness\n6. Compare performance metrics before and after optimizations\n7. Test performance configuration options",
+        "priority": "medium",
+        "dependencies": [
+          3,
+          7,
+          12
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 16,
+        "title": "Implement AWS Profile Support for CLI Authentication",
+        "description": "Add support for AWS profile-based authentication to allow users to specify AWS profiles when running commands, leveraging the AWS SDK for Go.",
+        "details": "1. Add AWS SDK for Go as a dependency using `go get github.com/aws/aws-sdk-go-v2`\n2. Extend the configuration system to include AWS profile settings\n   - Add AWS profile configuration in the YAML/JSON configuration file\n   - Create default AWS configuration section with region, profile name, etc.\n3. Implement command-line flag for AWS profile selection\n   - Add `--aws-profile` flag to the root command\n   - Ensure the flag overrides configuration file settings\n4. Create an AWS session management module\n   - Implement functions to create and manage AWS sessions based on profile\n   - Handle credential loading from ~/.aws/credentials and ~/.aws/config\n   - Support environment variable overrides (AWS_PROFILE)\n5. Integrate AWS authentication with existing CLI commands\n   - Create middleware or interceptor for commands requiring AWS authentication\n   - Pass AWS session to command handlers that need AWS services\n6. Implement profile validation and error handling\n   - Check for profile existence before attempting to use it\n   - Provide clear error messages for missing or invalid profiles\n7. Add support for assuming IAM roles through profiles\n   - Implement role assumption logic when specified in profiles\n   - Handle MFA token input when required\n8. Create helper functions for common AWS credential operations\n   - Profile listing\n   - Credential validation\n   - Session testing\n9. Update documentation to include AWS profile usage\n   - Add examples of using different profiles\n   - Document configuration options\n10. Implement caching for AWS credentials to improve performance\n    - Cache credentials with appropriate expiration\n    - Refresh credentials automatically when needed",
+        "testStrategy": "1. Unit tests for AWS profile loading and validation\n2. Test AWS session creation with various profile configurations\n3. Test command-line flag overrides for AWS profiles\n4. Test integration with existing CLI commands using AWS services\n5. Test error handling for missing or invalid profiles\n6. Test role assumption functionality with mock AWS responses\n7. Test credential caching and refresh mechanisms\n8. Integration tests with actual AWS credentials (using test accounts)\n9. Test environment variable overrides for AWS profiles\n10. Test performance with and without credential caching\n11. Test cross-platform compatibility of AWS credential loading\n12. Security tests to ensure credentials are handled safely",
+        "status": "pending",
+        "dependencies": [
+          1,
+          2
+        ],
+        "priority": "medium",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-08-28T07:23:38.932Z",
+      "updated": "2025-08-29T05:45:26.229Z",
+      "description": "Tasks for master context"
+    }
+  },
+  "documentation-enhancement": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Complete README.md Rewrite",
+        "description": "Transform the documentation from CLI tool description to automated service architecture, ensuring all documented features match current implementation.",
+        "details": "Create a comprehensive README.md that accurately reflects the current state of Chi-Chi-Moni as an automated financial data collection service. Include the following sections:\n\n1. Project Overview: Describe the transition from CLI to automated service\n2. Architecture: Detail AWS SSO, Secrets Manager, SimpleFIN API, and SQLite components\n3. Installation: Service deployment instructions including prerequisites\n4. Configuration: Environment variables, AWS setup, and service parameters\n5. Authentication: AWS SSO setup and configuration\n6. Credential Management: AWS Secrets Manager integration\n7. Database: SQLite schema, operations, and data model\n8. Package Structure: Overview of api, database, model, and main packages\n9. Testing: Current coverage and how to run tests\n10. Dependencies: List current versions (AWS SDK v2, sqlx v1.4.0, testify v1.11.1)\n11. Troubleshooting: Common issues with AWS authentication and service operation\n\nUse Markdown formatting with proper headings, code blocks for examples, and tables where appropriate. Include diagrams for architecture visualization using Mermaid or ASCII art.",
+        "testStrategy": "1. Peer review by team members to verify accuracy\n2. Validate all commands and setup instructions by following them on a clean environment\n3. Verify all AWS SSO and Secrets Manager documentation with actual configuration\n4. Check that all package descriptions match current implementation\n5. Ensure dependency versions are correctly listed\n6. Validate troubleshooting scenarios against known issues",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Draft Project Overview and Architecture Sections",
+            "description": "Create the Project Overview and Architecture sections of the README.md, focusing on the transition from CLI to automated service and detailing the system components.",
+            "dependencies": [],
+            "details": "Write comprehensive documentation for the first two sections of the README.md: (1) Project Overview - describing Chi-Chi-Moni's evolution from CLI tool to automated financial data collection service, highlighting key capabilities and use cases; (2) Architecture - creating detailed explanations of AWS SSO integration, Secrets Manager implementation, SimpleFIN API interaction, and SQLite database usage. Include a system architecture diagram using Mermaid syntax showing data flow between components.",
+            "status": "done",
+            "testStrategy": "Review content against current implementation to ensure accuracy. Validate architecture diagram with development team to confirm all components and connections are correctly represented."
+          },
+          {
+            "id": 2,
+            "title": "Document Installation and Configuration Processes",
+            "description": "Develop the Installation and Configuration sections with detailed instructions for service deployment and environment setup.",
+            "dependencies": [],
+            "details": "Create clear documentation for: (1) Installation - prerequisites, step-by-step deployment instructions for different environments, required permissions, and verification steps; (2) Configuration - all environment variables with descriptions and example values, AWS resource setup requirements, service parameters and their impact, and configuration file formats. Use code blocks for command examples and configuration snippets.",
+            "status": "done",
+            "testStrategy": "Follow the documented installation steps on a clean environment to verify completeness and accuracy. Test all configuration options to ensure they produce the expected behavior."
+          },
+          {
+            "id": 3,
+            "title": "Document Authentication and Credential Management",
+            "description": "Create the Authentication and Credential Management sections detailing AWS SSO setup and Secrets Manager integration.",
+            "dependencies": [],
+            "details": "Develop detailed documentation for: (1) Authentication - AWS SSO setup instructions, required permissions, token lifecycle management, configuration parameters, and troubleshooting common issues; (2) Credential Management - AWS Secrets Manager integration, secret format requirements, rotation procedures, security best practices, and example implementations. Include code snippets demonstrating authentication flows and credential retrieval.",
+            "status": "done",
+            "testStrategy": "Verify AWS SSO documentation by following setup in a test account. Test Secrets Manager documentation by creating and accessing secrets according to the instructions. Validate all code examples by executing them in a test environment."
+          },
+          {
+            "id": 4,
+            "title": "Document Database and Package Structure",
+            "description": "Create the Database and Package Structure sections explaining SQLite implementation and codebase organization.",
+            "dependencies": [],
+            "details": "Develop comprehensive documentation for: (1) Database - SQLite schema with tables and relationships, SQL operations for common tasks, migration procedures, data models, and performance considerations; (2) Package Structure - detailed overview of api, database, model, and main packages, their responsibilities, interactions, and key components. Include a database schema diagram and package dependency visualization using Markdown tables or Mermaid diagrams.",
+            "status": "done",
+            "testStrategy": "Review database documentation against actual schema implementation. Verify package structure documentation by comparing with current codebase organization. Test any provided SQL examples against a test database instance."
+          },
+          {
+            "id": 5,
+            "title": "Complete Testing, Dependencies, and Troubleshooting Sections",
+            "description": "Finalize the README.md with Testing, Dependencies, and Troubleshooting sections, ensuring comprehensive coverage of all required information.",
+            "dependencies": [],
+            "details": "Create the final sections of the README.md: (1) Testing - current test coverage, instructions for running tests, test organization, and adding new tests; (2) Dependencies - table of current versions including AWS SDK v2, sqlx v1.4.0, testify v1.11.1, and other dependencies with links to documentation; (3) Troubleshooting - common issues with AWS authentication, service operation, database connectivity, and API integration, including diagnostic steps and solutions. Review the entire document for consistency, formatting, and completeness.",
+            "status": "done",
+            "testStrategy": "Verify testing instructions by running tests according to documentation. Check dependency versions against go.mod file. Test troubleshooting solutions by reproducing common issues in a controlled environment."
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Database Package Test Suite Implementation",
+        "description": "Create comprehensive test suite for the database package to increase coverage from 0% to >90%, focusing on all database operations and error handling.",
+        "details": "Implement test suite using Go's testing package and testify v1.11.1 for assertions. Use SQLite in-memory database for testing to avoid file system dependencies.\n\nTest cases should include:\n\n1. NewDatabaseClient constructor with valid and invalid parameters\n2. Database connection initialization with schema validation\n3. PutBankAccount with new accounts and duplicate handling\n4. PutAccountBalance and PutBankAccountBalance operations\n5. DoesBankAccountExist query with existing and non-existing accounts\n6. Close method resource cleanup\n7. Concurrent access safety using goroutines\n8. Database migration and schema evolution\n\nImplement test helpers:\n- setupTestDB() to create in-memory test database\n- seedTestData() to populate test fixtures\n- mockErrorConditions() to simulate database errors\n\nUse table-driven tests for operation validation and sqlmock (github.com/DATA-DOG/go-sqlmock v1.5.0) for complex query testing. Implement subtests for different scenarios within each test function.",
+        "testStrategy": "1. Run tests with -race flag to detect race conditions\n2. Verify test coverage with 'go test -cover' targeting >90%\n3. Generate coverage report with 'go test -coverprofile=coverage.out'\n4. Review edge cases including database locks, constraint violations\n5. Validate resource cleanup with memory profiling\n6. Run tests in CI pipeline to ensure consistency",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Setup Test Environment and Helpers",
+            "description": "Create test environment setup functions and helper utilities for database testing",
+            "dependencies": [],
+            "details": "Implement setupTestDB() function to create in-memory SQLite database for testing. Create seedTestData() function to populate test fixtures with sample bank accounts and balances. Implement mockErrorConditions() to simulate database errors. Configure testify and sqlmock dependencies. Create test utilities for comparing database results and validating schema.",
+            "status": "pending",
+            "testStrategy": "Verify in-memory database creation works correctly. Ensure test data is properly seeded. Validate error simulation functions work as expected. Test helper functions with various input parameters."
+          },
+          {
+            "id": 2,
+            "title": "Test Database Client Constructor and Connection",
+            "description": "Implement tests for NewDatabaseClient constructor and database connection initialization",
+            "dependencies": [],
+            "details": "Create table-driven tests for NewDatabaseClient with valid and invalid parameters. Test database connection initialization with proper and improper schema validation. Verify error handling for invalid database paths, permission issues, and corrupt databases. Test connection pooling configuration. Implement tests for Close method resource cleanup.",
+            "status": "pending",
+            "testStrategy": "Use both valid and invalid constructor parameters. Test with various SQLite connection strings. Verify proper error messages are returned for failure cases. Check for resource leaks after Close() is called."
+          },
+          {
+            "id": 3,
+            "title": "Test Bank Account Operations",
+            "description": "Implement tests for bank account creation, retrieval and existence verification",
+            "dependencies": [],
+            "details": "Create tests for PutBankAccount with new accounts and duplicate handling. Implement tests for DoesBankAccountExist query with existing and non-existing accounts. Test GetBankAccounts with various filtering parameters. Verify proper error handling for constraint violations and invalid inputs. Use table-driven tests to cover multiple scenarios.",
+            "status": "pending",
+            "testStrategy": "Test account creation with valid and invalid data. Verify duplicate accounts are handled correctly. Test existence checks with various account IDs. Ensure proper error messages are returned for failure cases."
+          },
+          {
+            "id": 4,
+            "title": "Test Account Balance Operations",
+            "description": "Implement tests for account balance creation and updates",
+            "dependencies": [],
+            "details": "Create tests for PutAccountBalance and PutBankAccountBalance operations. Test balance updates with various currency types and amounts. Verify proper handling of non-existent accounts. Test balance retrieval functions. Implement tests for balance history tracking. Use sqlmock for complex query testing.",
+            "status": "pending",
+            "testStrategy": "Test balance operations with positive, negative, and zero amounts. Verify proper currency handling. Test with non-existent accounts to ensure appropriate errors. Verify balance history is correctly maintained."
+          },
+          {
+            "id": 5,
+            "title": "Test Concurrency and Database Migrations",
+            "description": "Implement tests for concurrent database access and schema migrations",
+            "dependencies": [],
+            "details": "Create tests for concurrent database access using goroutines. Implement tests for database locking scenarios. Test database migration and schema evolution functions. Verify proper handling of schema version upgrades. Test rollback functionality for failed migrations. Use the -race flag to detect race conditions.",
+            "status": "pending",
+            "testStrategy": "Run concurrent operations with multiple goroutines. Test with intentional delays to force contention. Verify migrations between different schema versions. Test migration failure scenarios and rollback functionality. Use benchmarks to measure performance under load."
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Model Package Test Suite Implementation",
+        "description": "Develop comprehensive test suite for the model package to increase coverage from 0% to >90%, focusing on data structures, validation, and serialization.",
+        "details": "Create test suite for all model structures using Go's testing package and testify v1.11.1. Focus on:\n\n1. Account struct JSON marshaling and unmarshaling with various field combinations\n2. GetAccountsResponse structure validation with empty, partial, and complete data\n3. Data validation for all model types including boundary conditions\n4. Model relationship integrity between accounts, balances, and transactions\n5. Error handling for malformed data inputs\n6. Additional model structures for transactions, organizations, holdings\n\nImplement test fixtures:\n- validAccountData.json with complete valid account data\n- invalidAccountData.json with various validation errors\n- complexResponseData.json with nested structures\n\nUse table-driven tests for validation scenarios and property-based testing for complex data structures. Implement subtests for different model attributes and relationships. Use reflection for testing struct field tags and validation rules.",
+        "testStrategy": "1. Verify JSON serialization against known good examples\n2. Test boundary conditions (empty strings, zero values, max integers)\n3. Validate against SimpleFIN API documentation examples\n4. Generate coverage report targeting >90%\n5. Verify backward compatibility with existing data\n6. Test custom validation methods for each model type",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Implement Account Struct Tests",
+            "description": "Create comprehensive tests for Account struct JSON marshaling and unmarshaling with various field combinations",
+            "dependencies": [],
+            "details": "Develop test cases for Account struct serialization and deserialization using testify/assert. Include tests for all field combinations (empty, partial, complete), field validation rules, and custom JSON tags. Create test fixtures with valid and invalid account data. Implement table-driven tests to verify proper handling of different account configurations.",
+            "status": "pending",
+            "testStrategy": "Use testify/assert for assertions and table-driven tests to verify JSON marshaling/unmarshaling. Test with validAccountData.json and invalidAccountData.json fixtures. Verify proper handling of required vs optional fields and field validation rules."
+          },
+          {
+            "id": 2,
+            "title": "Implement Response Structure Tests",
+            "description": "Create tests for GetAccountsResponse and other response structures with empty, partial, and complete data",
+            "dependencies": [
+              "3.1"
+            ],
+            "details": "Develop tests for all API response structures, focusing on GetAccountsResponse. Test serialization/deserialization with empty arrays, null values, and complete data sets. Verify proper handling of nested structures and arrays. Use complexResponseData.json fixture to test complex nested response handling. Implement validation tests for response structure integrity.",
+            "status": "pending",
+            "testStrategy": "Use table-driven tests with various data scenarios. Test boundary conditions including empty responses, single-item responses, and large data sets. Verify proper handling of optional fields and null values."
+          },
+          {
+            "id": 3,
+            "title": "Implement Data Validation Tests",
+            "description": "Create tests for data validation across all model types including boundary conditions",
+            "dependencies": [],
+            "details": "Develop tests for validation rules across all model types. Test boundary conditions such as empty strings, zero values, maximum integers, and invalid formats. Implement negative tests with malformed data to verify proper error handling. Use property-based testing for complex validation scenarios. Test custom validators and validation tags on struct fields.",
+            "status": "pending",
+            "testStrategy": "Use table-driven tests with boundary value analysis. Test both valid and invalid inputs for each validation rule. Verify appropriate error messages are returned for validation failures. Use reflection to test struct field validation tags."
+          },
+          {
+            "id": 4,
+            "title": "Implement Model Relationship Tests",
+            "description": "Create tests for model relationship integrity between accounts, balances, and transactions",
+            "dependencies": [
+              "3.1",
+              "3.2",
+              "3.3"
+            ],
+            "details": "Develop tests that verify proper relationships between different model types. Test account-to-balance relationships, transaction-to-account relationships, and organization-to-account hierarchies. Verify referential integrity and proper handling of relationship constraints. Test with complex nested data structures to ensure relationship integrity is maintained during serialization/deserialization.",
+            "status": "pending",
+            "testStrategy": "Create test fixtures with complex model relationships. Test serialization/deserialization of related models. Verify proper handling of one-to-many and many-to-many relationships. Test with both valid and invalid relationship configurations."
+          },
+          {
+            "id": 5,
+            "title": "Implement Error Handling Tests",
+            "description": "Create tests for error handling with malformed data inputs across all model types",
+            "dependencies": [
+              "3.3"
+            ],
+            "details": "Develop tests that verify proper error handling for malformed data inputs. Test JSON parsing errors, validation errors, and type conversion errors. Verify appropriate error messages are returned for different error conditions. Test error handling for edge cases such as missing required fields, invalid data types, and constraint violations. Implement tests for custom error types and error wrapping.",
+            "status": "pending",
+            "testStrategy": "Use negative testing with intentionally malformed inputs. Verify error types, error messages, and error propagation. Test error handling for all public functions in the model package. Ensure errors provide sufficient context for debugging."
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "API Package Enhanced Test Coverage",
+        "description": "Improve API package test coverage from 45.2% to >90% by implementing additional test cases for AWS Secrets Manager integration, SSO authentication, and SimpleFIN client.",
+        "details": "Enhance existing API package tests and add new test cases focusing on:\n\n1. AWS Secrets Manager integration:\n   - Mock AWS SDK responses using aws-sdk-go-v2/service/secretsmanager/types\n   - Test credential retrieval, storage, and rotation scenarios\n   - Simulate service errors and timeout conditions\n\n2. SSO client authentication flow:\n   - Mock device authorization responses\n   - Test token refresh and expiration handling\n   - Simulate authentication failures and recovery\n\n3. Access token resolution:\n   - Test caching behavior and expiration\n   - Verify token validation logic\n   - Test concurrent access patterns\n\n4. SimpleFinClient error handling:\n   - Mock API responses for various error conditions\n   - Test retry logic and backoff strategies\n   - Verify response parsing with malformed data\n\nUse go-aws-testing (github.com/awslabs/aws-sdk-go-v2-testing) for AWS service mocking and httptest package for API response simulation. Implement context timeout testing for long-running operations.",
+        "testStrategy": "1. Run existing tests to establish baseline coverage\n2. Identify coverage gaps using 'go test -coverprofile=coverage.out'\n3. Implement new test cases targeting uncovered code paths\n4. Verify error handling with intentional failure injection\n5. Test with various AWS SDK response scenarios\n6. Validate token lifecycle management across multiple requests",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "AWS Secrets Manager Integration Test Cases",
+            "description": "Implement test cases for AWS Secrets Manager integration focusing on credential retrieval, storage, rotation scenarios, and error handling.",
+            "dependencies": [],
+            "details": "Create comprehensive test suite for AWS Secrets Manager integration using aws-sdk-go-v2/service/secretsmanager/types for mocking. Implement tests for credential retrieval with various secret formats, storage operations with validation, and rotation scenarios including automatic and manual rotation. Add tests for error conditions including service unavailability, permission issues, and malformed secrets. Use context timeout testing for long-running operations.",
+            "status": "pending",
+            "testStrategy": "Use go-aws-testing library to mock AWS SDK responses. Create test fixtures with sample secrets in various formats. Test both success and failure paths. Verify proper error handling and logging. Simulate network timeouts and service errors."
+          },
+          {
+            "id": 2,
+            "title": "SSO Authentication Flow Test Suite",
+            "description": "Develop test cases for SSO client authentication flow covering device authorization, token refresh, expiration handling, and authentication failures.",
+            "dependencies": [],
+            "details": "Implement test suite for SSO authentication flow using httptest package to mock authorization endpoints. Create tests for the complete device authorization flow including URL generation, user code validation, and token acquisition. Test token refresh mechanisms with various expiration scenarios. Implement tests for authentication failure cases and recovery paths. Verify proper handling of concurrent authentication requests.",
+            "status": "pending",
+            "testStrategy": "Mock SSO endpoints using httptest package. Create test fixtures with valid and invalid tokens. Test token refresh with manipulated expiration times. Simulate network failures during authentication. Verify proper caching behavior."
+          },
+          {
+            "id": 3,
+            "title": "Access Token Resolution Test Cases",
+            "description": "Create test cases for access token resolution focusing on caching behavior, expiration handling, validation logic, and concurrent access patterns.",
+            "dependencies": [
+              "4.2"
+            ],
+            "details": "Implement tests for token caching mechanisms including initial cache population, retrieval, and invalidation. Test token expiration scenarios with various time conditions. Create validation tests for token structure, signature verification, and claims validation. Implement concurrent access tests to verify thread safety of token operations. Test integration with SSO authentication for token acquisition.",
+            "status": "pending",
+            "testStrategy": "Use atomic operations and goroutines to test concurrent access. Create test fixtures with tokens at various stages of validity. Manipulate system clock for expiration testing. Verify cache hit/miss behavior with instrumentation."
+          },
+          {
+            "id": 4,
+            "title": "SimpleFINClient Error Handling Tests",
+            "description": "Implement test cases for SimpleFINClient error handling including API response mocking, retry logic, backoff strategies, and malformed data handling.",
+            "dependencies": [],
+            "details": "Create comprehensive test suite for SimpleFINClient error handling using httptest package to mock API responses. Implement tests for various HTTP error codes (4xx, 5xx) and verify appropriate error handling. Test retry logic with configurable attempt counts and backoff strategies. Create tests for response parsing with well-formed and malformed JSON data. Implement timeout handling tests for API operations.",
+            "status": "pending",
+            "testStrategy": "Use httptest to create mock API endpoints returning various error conditions. Test exponential backoff implementation with time manipulation. Create fixtures with valid and invalid JSON responses. Verify proper error propagation and logging."
+          },
+          {
+            "id": 5,
+            "title": "Integration Test Coverage Analysis",
+            "description": "Analyze test coverage results, identify remaining gaps, and implement additional test cases to reach >90% coverage target.",
+            "dependencies": [
+              "4.1",
+              "4.2",
+              "4.3",
+              "4.4"
+            ],
+            "details": "Run coverage analysis using 'go test -coverprofile=coverage.out' after implementing initial test suites. Identify code paths with insufficient coverage. Implement additional test cases targeting uncovered or under-tested code. Focus on edge cases, error conditions, and rare execution paths. Create integration tests that verify interactions between components. Generate final coverage report and verify >90% coverage achievement.",
+            "status": "pending",
+            "testStrategy": "Use go cover tools to identify coverage gaps. Create targeted tests for specific uncovered functions. Implement table-driven tests for comprehensive path coverage. Verify coverage improvements after each test addition."
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Main Package Test Suite Implementation",
+        "description": "Create test suite for the main package to increase coverage from 0% to >90%, focusing on service initialization, configuration validation, and AWS credential workflows.",
+        "details": "Implement test suite for main package using Go's testing package and testify v1.11.1. Focus on:\n\n1. Service initialization and configuration validation:\n   - Test with valid and invalid configuration parameters\n   - Verify environment variable processing\n   - Test configuration file loading\n\n2. Helper function testing:\n   - getAccessToken with various token states\n   - getDbFilePath with different environment configurations\n   - Other utility functions in main package\n\n3. AWS credential validation:\n   - Mock AWS SDK responses for credential testing\n   - Test credential refresh and rotation\n   - Simulate authentication failures\n\n4. Database initialization:\n   - Test successful connection establishment\n   - Verify error handling for connection failures\n   - Test migration execution\n\n5. Graceful shutdown:\n   - Verify resource cleanup on termination\n   - Test signal handling (SIGTERM, SIGINT)\n   - Validate shutdown sequence ordering\n\nUse dependency injection to replace AWS clients and database connections with mocks. Implement test helpers for environment setup and cleanup.",
+        "testStrategy": "1. Use build tags to separate integration and unit tests\n2. Mock external dependencies using interfaces\n3. Test configuration with various environment setups\n4. Verify signal handling with os/signal/testing\n5. Generate coverage report targeting >90%\n6. Test startup and shutdown sequences with timing validation",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          3,
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Service Initialization and Configuration Testing",
+            "description": "Implement tests for service initialization and configuration validation with various valid and invalid parameters.",
+            "dependencies": [],
+            "details": "Create test cases for service initialization that cover:\n- Valid configuration parameters\n- Invalid configuration parameters\n- Environment variable processing\n- Configuration file loading from different locations\n- Default configuration fallbacks\n- Configuration validation rules\n- Error handling during initialization",
+            "status": "pending",
+            "testStrategy": "Use dependency injection to mock external dependencies. Create temporary environment variables and configuration files for testing. Implement test helpers for environment setup and cleanup."
+          },
+          {
+            "id": 2,
+            "title": "Helper Function Test Implementation",
+            "description": "Develop comprehensive tests for all utility functions in the main package including getAccessToken and getDbFilePath.",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Create test cases for helper functions including:\n- getAccessToken with various token states (valid, expired, missing)\n- getDbFilePath with different environment configurations\n- Error handling in utility functions\n- Edge cases for all helper functions\n- Performance considerations for critical utility functions",
+            "status": "pending",
+            "testStrategy": "Use table-driven tests to cover multiple scenarios efficiently. Mock dependencies to isolate function behavior. Test with boundary conditions and error cases."
+          },
+          {
+            "id": 3,
+            "title": "AWS Credential Validation Testing",
+            "description": "Implement tests for AWS credential validation, refresh, and rotation workflows using mocked AWS SDK responses.",
+            "dependencies": [
+              "5.1",
+              "5.2"
+            ],
+            "details": "Create test cases for AWS credential handling that cover:\n- Mock AWS SDK responses for credential testing\n- Credential refresh and rotation scenarios\n- Authentication failure handling\n- Retry logic for transient failures\n- Timeout handling\n- Credential caching behavior",
+            "status": "pending",
+            "testStrategy": "Use AWS SDK testing utilities to mock responses. Implement custom mocks for AWS clients. Test various credential states including valid, expired, and invalid credentials."
+          },
+          {
+            "id": 4,
+            "title": "Database Initialization Testing",
+            "description": "Develop tests for database connection establishment, error handling, and migration execution.",
+            "dependencies": [
+              "5.1"
+            ],
+            "details": "Create test cases for database initialization that cover:\n- Successful connection establishment\n- Error handling for connection failures\n- Migration execution verification\n- Database version validation\n- Connection pool configuration\n- Database credential handling\n- Recovery from temporary database unavailability",
+            "status": "pending",
+            "testStrategy": "Use SQLite in-memory database for testing. Mock database connections to simulate failures. Verify migration execution with schema inspection queries."
+          },
+          {
+            "id": 5,
+            "title": "Graceful Shutdown Testing",
+            "description": "Implement tests for graceful shutdown processes including resource cleanup, signal handling, and shutdown sequence validation.",
+            "dependencies": [
+              "5.1",
+              "5.3",
+              "5.4"
+            ],
+            "details": "Create test cases for graceful shutdown that cover:\n- Resource cleanup on termination\n- Signal handling (SIGTERM, SIGINT)\n- Shutdown sequence ordering validation\n- Timeout handling during shutdown\n- Verification of complete resource release\n- Handling of in-progress operations during shutdown\n- Logging during shutdown process",
+            "status": "pending",
+            "testStrategy": "Use os/signal/testing package to simulate OS signals. Implement resource tracking to verify cleanup. Use timeouts to ensure shutdown completes within expected duration."
+          }
+        ]
+      },
+      {
+        "id": 6,
+        "title": "Integration Test Suite Implementation",
+        "description": "Develop end-to-end integration tests covering the complete service workflow from AWS SSO authentication to data persistence in SQLite.",
+        "details": "Create integration test suite that validates the entire service workflow:\n\n1. End-to-end service workflow:\n   - Initialize service with test configuration\n   - Authenticate with AWS SSO (using test credentials)\n   - Retrieve data from SimpleFIN API (using mock server)\n   - Verify data persistence in SQLite database\n\n2. AWS SSO authentication integration:\n   - Test complete authentication flow with mock AWS endpoints\n   - Verify token refresh and session management\n   - Test permission boundary scenarios\n\n3. Secrets Manager credential lifecycle:\n   - Test secret creation, retrieval, and rotation\n   - Verify credential caching and expiration\n   - Test access control and permission scenarios\n\n4. SimpleFIN API integration:\n   - Create mock SimpleFIN server using httptest\n   - Test various API response scenarios\n   - Verify error handling and retry logic\n\n5. Database persistence:\n   - Verify data integrity across service restarts\n   - Test concurrent data operations\n   - Validate schema migrations\n\n6. Error recovery mechanisms:\n   - Test service resilience to temporary failures\n   - Verify retry policies and backoff strategies\n   - Test logging and monitoring integration\n\nUse Docker containers for integration testing to provide isolated environment. Implement test fixtures for AWS credentials and SimpleFIN API responses.",
+        "testStrategy": "1. Run integration tests in CI pipeline with dedicated test environment\n2. Use Docker Compose to orchestrate test dependencies\n3. Implement cleanup routines to reset state between tests\n4. Measure test coverage across package boundaries\n5. Validate data integrity with database assertions\n6. Test with simulated network failures and service interruptions",
+        "priority": "low",
+        "dependencies": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Setup Docker Test Environment",
+            "description": "Create Docker containers for integration testing to provide an isolated environment with all necessary dependencies.",
+            "dependencies": [],
+            "details": "Develop a Docker Compose configuration that includes containers for the service, mock AWS SSO endpoints, mock SimpleFIN server, and SQLite database. Configure networking between containers and ensure proper initialization sequence. Include volume mounts for test fixtures and result persistence. Implement health checks to ensure all services are ready before tests begin.",
+            "status": "pending",
+            "testStrategy": "Verify Docker environment starts correctly with all services accessible. Test container networking and communication. Ensure environment can be reset between test runs. Validate resource cleanup after tests complete."
+          },
+          {
+            "id": 2,
+            "title": "AWS SSO Authentication Test Suite",
+            "description": "Implement tests for the complete AWS SSO authentication flow using mock AWS endpoints.",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Create mock AWS SSO service that simulates authentication responses. Implement tests for token acquisition, refresh mechanisms, and session management. Test various permission scenarios including successful authentication, expired tokens, insufficient permissions, and service unavailability. Verify proper error handling and retry logic for authentication failures.",
+            "status": "pending",
+            "testStrategy": "Use mock AWS endpoints to simulate various authentication scenarios. Test token refresh with different expiration times. Verify correct handling of permission boundaries. Validate error logging and recovery mechanisms."
+          },
+          {
+            "id": 3,
+            "title": "SimpleFIN API Integration Test Suite",
+            "description": "Develop tests for SimpleFIN API integration using a mock server to verify data retrieval and error handling.",
+            "dependencies": [
+              "6.1"
+            ],
+            "details": "Create a mock SimpleFIN server using httptest that returns predefined responses for different API endpoints. Implement tests for successful data retrieval, pagination handling, and various error conditions. Test retry logic with simulated network failures and rate limiting. Verify proper parsing and validation of API responses.",
+            "status": "pending",
+            "testStrategy": "Test API client with various response scenarios including success, errors, and malformed data. Verify retry behavior with controlled response delays. Test concurrent API requests and rate limiting handling."
+          },
+          {
+            "id": 4,
+            "title": "SQLite Persistence Test Suite",
+            "description": "Create tests to verify data integrity and persistence in the SQLite database across service operations.",
+            "dependencies": [
+              "6.1",
+              "6.3"
+            ],
+            "details": "Implement tests that verify data is correctly stored in the SQLite database after being retrieved from the SimpleFIN API. Test database operations including inserts, updates, and queries. Verify data integrity across service restarts. Test concurrent database operations and validate schema migrations. Implement tests for error conditions such as database locks and constraint violations.",
+            "status": "pending",
+            "testStrategy": "Verify data integrity by comparing API responses with database content. Test database operations under load with concurrent requests. Validate schema migrations with different database versions. Test error recovery from database failures."
+          },
+          {
+            "id": 5,
+            "title": "End-to-End Workflow Test Suite",
+            "description": "Develop comprehensive end-to-end tests that validate the complete service workflow from authentication to data persistence.",
+            "dependencies": [
+              "6.2",
+              "6.3",
+              "6.4"
+            ],
+            "details": "Create integration tests that exercise the entire service workflow: initialize service with test configuration, authenticate with AWS SSO using test credentials, retrieve data from SimpleFIN API, and verify data persistence in SQLite. Test error recovery mechanisms including service resilience to temporary failures, retry policies, and backoff strategies. Verify logging and monitoring integration. Test Secrets Manager credential lifecycle including creation, retrieval, and rotation.",
+            "status": "pending",
+            "testStrategy": "Execute full workflow tests in isolated Docker environment. Inject failures at various stages to test recovery. Measure end-to-end performance and resource usage. Verify all components interact correctly through complete service cycles."
+          }
+        ]
+      },
+      {
+        "id": 7,
+        "title": "AWS SSO Authentication Documentation and Testing",
+        "description": "Create comprehensive documentation and tests for AWS SSO authentication flow, including setup, configuration, and troubleshooting.",
+        "details": "Develop detailed documentation and tests for AWS SSO authentication:\n\n1. Documentation components:\n   - Step-by-step AWS SSO setup guide\n   - Required IAM permissions and policies\n   - Configuration parameters and environment variables\n   - Token lifecycle management explanation\n   - Troubleshooting common authentication issues\n\n2. Test components:\n   - Mock AWS SSO service responses using aws-sdk-go-v2 testing tools\n   - Test device authorization flow with various response scenarios\n   - Verify token refresh logic and expiration handling\n   - Test error recovery for authentication failures\n   - Validate permission verification logic\n\nImplement using the latest AWS SDK v2 authentication libraries and best practices. Include diagrams showing the authentication flow and sequence of API calls. Document the token caching mechanism and security considerations.",
+        "testStrategy": "1. Verify documentation accuracy with AWS SSO setup in test account\n2. Test authentication flow with mock AWS endpoints\n3. Validate error handling with intentional failure injection\n4. Test token refresh with manipulated expiration times\n5. Verify documentation examples with actual code execution\n6. Test with various IAM permission configurations",
+        "priority": "high",
+        "dependencies": [
+          1,
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create AWS SSO Setup Documentation",
+            "description": "Develop comprehensive step-by-step documentation for AWS SSO setup, including IAM permissions and policies required for implementation.",
+            "dependencies": [],
+            "details": "Create detailed documentation covering: AWS SSO service setup in AWS console, organization configuration, identity source integration, permission set creation, AWS account assignments, required IAM permissions and policies with examples, and security best practices. Include diagrams illustrating the AWS SSO architecture and setup workflow. Document should follow a logical progression from initial setup to complete implementation.",
+            "status": "pending",
+            "testStrategy": "Verify documentation accuracy by following steps in a test AWS account. Have a colleague without prior AWS SSO experience follow the documentation to validate clarity and completeness. Cross-reference with latest AWS documentation to ensure alignment with current AWS SSO features."
+          },
+          {
+            "id": 2,
+            "title": "Document AWS SSO Authentication Flow and Token Management",
+            "description": "Create technical documentation explaining the AWS SSO authentication flow, token lifecycle management, and configuration parameters.",
+            "dependencies": [
+              "7.1"
+            ],
+            "details": "Document the complete AWS SSO authentication flow using AWS SDK v2, including: sequence diagrams showing API call flow, token acquisition process, token refresh mechanisms, token caching implementation, security considerations for token storage, configuration parameters and environment variables needed, and explanation of token expiration handling. Include code examples demonstrating the authentication process using aws-sdk-go-v2.",
+            "status": "pending",
+            "testStrategy": "Validate flow diagrams against actual AWS SDK implementation. Test configuration examples in development environment. Review token lifecycle documentation against AWS SSO service behavior to confirm accuracy."
+          },
+          {
+            "id": 3,
+            "title": "Develop AWS SSO Troubleshooting Guide",
+            "description": "Create a comprehensive troubleshooting guide for common AWS SSO authentication issues and error recovery strategies.",
+            "dependencies": [
+              "7.1",
+              "7.2"
+            ],
+            "details": "Develop a troubleshooting guide that includes: common error codes and their meanings, diagnostic steps for authentication failures, network connectivity issues, permission problems, token expiration issues, device authorization flow failures, and step-by-step resolution procedures. Include decision trees to guide users through the troubleshooting process and example logs showing both successful and failed authentication attempts.",
+            "status": "pending",
+            "testStrategy": "Validate troubleshooting procedures by intentionally creating each error condition and following the guide to resolution. Test with different AWS account configurations to ensure comprehensive coverage of potential issues."
+          },
+          {
+            "id": 4,
+            "title": "Implement AWS SSO Authentication Unit Tests",
+            "description": "Develop comprehensive unit tests for AWS SSO authentication components using aws-sdk-go-v2 testing tools.",
+            "dependencies": [
+              "7.2"
+            ],
+            "details": "Create unit tests covering: mock AWS SSO service responses using aws-sdk-go-v2 testing tools, test initialization of SSO authentication client, verification of configuration parameter handling, token acquisition process, token refresh logic, error handling for various failure scenarios, and permission verification logic. Implement tests for both successful authentication flows and error conditions. Use dependency injection to mock AWS API responses.",
+            "status": "pending",
+            "testStrategy": "Run tests with race detection enabled. Verify test coverage exceeds 90% for authentication components. Test with various mock response scenarios including timeouts, service errors, and malformed responses. Validate error recovery mechanisms function as documented."
+          },
+          {
+            "id": 5,
+            "title": "Implement AWS SSO Integration Tests",
+            "description": "Create integration tests for the complete AWS SSO authentication flow, including device authorization and token refresh scenarios.",
+            "dependencies": [
+              "7.2",
+              "7.4"
+            ],
+            "details": "Develop integration tests that validate: end-to-end authentication flow with AWS SSO, device authorization flow with various response scenarios, token refresh behavior with manipulated expiration times, error recovery for authentication failures, permission verification against actual AWS resources, and performance under various network conditions. Tests should use a combination of real AWS SSO endpoints (for integration testing) and mocked responses (for edge cases).",
+            "status": "pending",
+            "testStrategy": "Execute tests in a dedicated test AWS account with SSO configured. Test with intentional failure injection to validate error handling. Verify token refresh with artificially shortened expiration times. Test concurrent authentication requests to validate thread safety."
+          }
+        ]
+      },
+      {
+        "id": 8,
+        "title": "AWS Secrets Manager Integration Documentation and Testing",
+        "description": "Create comprehensive documentation and tests for AWS Secrets Manager integration, including credential storage, retrieval, and rotation.",
+        "details": "Develop detailed documentation and tests for AWS Secrets Manager integration:\n\n1. Documentation components:\n   - Secrets Manager setup and configuration guide\n   - Required IAM permissions and policies\n   - Secret format and structure requirements\n   - Credential rotation procedures\n   - Security best practices and considerations\n\n2. Test components:\n   - Mock Secrets Manager service using aws-sdk-go-v2 testing tools\n   - Test secret creation, retrieval, and update operations\n   - Verify error handling for service failures\n   - Test credential rotation scenarios\n   - Validate permission verification logic\n\nImplement using the latest AWS SDK v2 Secrets Manager libraries (aws-sdk-go-v2/service/secretsmanager v1.19.0 or newer). Include examples of secret JSON structure and required fields. Document encryption options and access control mechanisms.",
+        "testStrategy": "1. Verify documentation accuracy with Secrets Manager in test account\n2. Test secret operations with mock AWS endpoints\n3. Validate error handling with intentional failure injection\n4. Test secret rotation with simulated rotation events\n5. Verify documentation examples with actual code execution\n6. Test with various IAM permission configurations",
+        "priority": "high",
+        "dependencies": [
+          1,
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create Secrets Manager Setup and Configuration Guide",
+            "description": "Develop comprehensive documentation for AWS Secrets Manager setup, configuration, and required IAM permissions and policies.",
+            "dependencies": [],
+            "details": "Create detailed documentation covering: AWS Secrets Manager service overview, account setup requirements, console and CLI configuration steps, required IAM permissions with example policy documents, cross-account access configuration, and integration with the application. Include step-by-step instructions with screenshots and code examples using aws-sdk-go-v2/service/secretsmanager v1.19.0 or newer.",
+            "status": "pending",
+            "testStrategy": "Validate documentation by following steps in a test AWS account, verify IAM policy examples work as described, and confirm all configuration options are accurately documented with current AWS console UI."
+          },
+          {
+            "id": 2,
+            "title": "Document Secret Format and Security Best Practices",
+            "description": "Create documentation for secret format requirements, structure, encryption options, and security best practices.",
+            "dependencies": [
+              "8.1"
+            ],
+            "details": "Document the required JSON structure for secrets with field specifications, validation requirements, and examples. Include encryption options (KMS keys, automatic vs. custom), access control mechanisms, secret versioning, and security best practices. Cover topics such as secret rotation schedules, least privilege access, monitoring and auditing, and compliance considerations. Provide concrete examples of properly structured secrets for the application.",
+            "status": "pending",
+            "testStrategy": "Review documentation against AWS Well-Architected Framework security best practices, validate JSON examples with schema validation, and verify encryption options with actual AWS Secrets Manager implementation."
+          },
+          {
+            "id": 3,
+            "title": "Implement Secret Operation Unit Tests",
+            "description": "Develop unit tests for secret creation, retrieval, update operations, and error handling using AWS SDK mock tools.",
+            "dependencies": [
+              "8.2"
+            ],
+            "details": "Create comprehensive unit tests using aws-sdk-go-v2 testing tools to mock the Secrets Manager service. Implement test cases for creating secrets with valid/invalid formats, retrieving secrets with proper/improper permissions, updating existing secrets, and deleting secrets. Include negative test cases for service failures, timeout scenarios, and permission issues. Use table-driven tests to cover multiple scenarios efficiently.",
+            "status": "pending",
+            "testStrategy": "Run tests in isolation with mock AWS endpoints, verify all operations have >90% code coverage, and ensure tests validate both success and failure paths."
+          },
+          {
+            "id": 4,
+            "title": "Document and Test Credential Rotation Procedures",
+            "description": "Create documentation and tests for automated and manual credential rotation procedures using AWS Secrets Manager.",
+            "dependencies": [
+              "8.2",
+              "8.3"
+            ],
+            "details": "Document both automated and manual credential rotation procedures, including Lambda rotation function setup, rotation schedule configuration, and handling rotation failures. Implement tests for credential rotation scenarios including scheduled rotations, on-demand rotations, and rotation failure recovery. Test the application's ability to detect and use newly rotated credentials without service disruption.",
+            "status": "pending",
+            "testStrategy": "Test rotation procedures with simulated rotation events, verify application continues functioning during rotation, and validate rotation failure handling with intentionally failed rotations."
+          },
+          {
+            "id": 5,
+            "title": "Create Integration Test Suite for Secrets Manager",
+            "description": "Develop end-to-end integration tests that validate the complete Secrets Manager workflow within the application.",
+            "dependencies": [
+              "8.3",
+              "8.4"
+            ],
+            "details": "Implement integration tests that verify the application correctly interacts with Secrets Manager in realistic scenarios. Test the full lifecycle including initialization with Secrets Manager configuration, authentication, secret retrieval with proper error handling, secret updates, and credential rotation. Include tests for permission verification logic, service unavailability scenarios, and integration with other AWS services. Document test setup requirements and configuration.",
+            "status": "pending",
+            "testStrategy": "Execute integration tests against localstack or actual AWS services in a test account, verify application behavior matches documentation in all scenarios, and validate error handling with intentional failure injection."
+          }
+        ]
+      },
+      {
+        "id": 9,
+        "title": "SQLite Database Documentation and Testing",
+        "description": "Create comprehensive documentation and tests for SQLite database integration, including schema, operations, and data model.",
+        "details": "Develop detailed documentation and tests for SQLite database integration:\n\n1. Documentation components:\n   - Database schema diagram and explanation\n   - Table relationships and constraints\n   - SQL operations for common tasks\n   - Migration procedures and version management\n   - Performance considerations and optimization\n\n2. Test components:\n   - Test database initialization and connection management\n   - Verify schema creation and migration\n   - Test CRUD operations for all tables\n   - Validate constraint enforcement\n   - Test concurrent access patterns\n   - Verify transaction isolation levels\n\nImplement using sqlx v1.4.0 for database operations. Include complete SQL schema definition and migration scripts. Document the data model relationship to SimpleFIN API entities. Provide examples of common query patterns and performance optimization techniques.",
+        "testStrategy": "1. Test schema creation in empty database\n2. Verify migrations with schema changes\n3. Test CRUD operations with various data scenarios\n4. Validate constraint enforcement with invalid data\n5. Test concurrent access with multiple goroutines\n6. Measure query performance with large datasets",
+        "priority": "high",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Database Schema Documentation",
+            "description": "Create comprehensive documentation for the SQLite database schema, including diagrams, table relationships, and constraints.",
+            "dependencies": [],
+            "details": "Develop detailed documentation of the database schema including: entity-relationship diagrams using a tool like dbdiagram.io, complete table definitions with column types and constraints, foreign key relationships between tables, and indexes for performance optimization. Document how the schema maps to SimpleFIN API entities and include SQL DDL scripts for schema creation.",
+            "status": "pending",
+            "testStrategy": "Validate schema documentation against actual database implementation using sqlx schema introspection. Ensure all tables, columns, constraints, and relationships are accurately documented."
+          },
+          {
+            "id": 2,
+            "title": "SQL Operations and Migration Documentation",
+            "description": "Document common SQL operations, migration procedures, and version management for the SQLite database.",
+            "dependencies": [
+              "9.1"
+            ],
+            "details": "Create documentation covering: SQL queries for common CRUD operations, prepared statement examples for all tables, migration strategy using versioned SQL scripts, upgrade and downgrade paths between versions, and transaction management best practices. Include code examples using sqlx v1.4.0 for all operations and document error handling patterns.",
+            "status": "pending",
+            "testStrategy": "Review documentation against actual implementation code to ensure accuracy. Test migration scripts in isolation to verify they produce the expected schema changes."
+          },
+          {
+            "id": 3,
+            "title": "Database Performance Optimization Documentation",
+            "description": "Document performance considerations and optimization techniques for the SQLite database implementation.",
+            "dependencies": [
+              "9.1",
+              "9.2"
+            ],
+            "details": "Create documentation covering: indexing strategies for common query patterns, query optimization techniques specific to SQLite, connection pooling configuration with sqlx, transaction isolation levels and their performance implications, and recommendations for handling large datasets. Include benchmarks for common operations and guidance on monitoring database performance.",
+            "status": "pending",
+            "testStrategy": "Validate performance recommendations with benchmark tests comparing optimized vs. unoptimized queries. Test with various dataset sizes to verify scalability of the recommended approaches."
+          },
+          {
+            "id": 4,
+            "title": "Database Initialization and Schema Tests",
+            "description": "Implement tests for database initialization, connection management, schema creation, and migration.",
+            "dependencies": [
+              "9.1",
+              "9.2"
+            ],
+            "details": "Develop test suite using Go's testing package and testify for assertions that covers: database client initialization with valid and invalid configurations, connection establishment and pooling, schema creation in an empty database, schema validation against expected structure, and migration between different schema versions. Use SQLite in-memory database for testing to avoid filesystem dependencies.",
+            "status": "pending",
+            "testStrategy": "Run tests with -race flag to detect concurrency issues. Verify test coverage with 'go test -cover'. Test with various initialization parameters to ensure robust error handling."
+          },
+          {
+            "id": 5,
+            "title": "Database Operations and Concurrency Tests",
+            "description": "Implement tests for CRUD operations, constraint enforcement, and concurrent access patterns.",
+            "dependencies": [
+              "9.4"
+            ],
+            "details": "Create comprehensive tests for: CRUD operations on all tables with various data scenarios, validation of all database constraints (unique, foreign key, not null, etc.), transaction rollback on errors, concurrent access with multiple goroutines, and verification of transaction isolation levels. Include edge cases like handling of Unicode data, maximum field lengths, and invalid inputs.",
+            "status": "pending",
+            "testStrategy": "Test with intentionally invalid data to verify constraint enforcement. Use multiple goroutines to test concurrent access patterns. Measure query performance with large datasets to validate optimization techniques."
+          }
+        ]
+      },
+      {
+        "id": 10,
+        "title": "SimpleFIN API Integration Documentation and Testing",
+        "description": "Create comprehensive documentation and tests for SimpleFIN API integration, including authentication, data retrieval, and error handling.",
+        "details": "Develop detailed documentation and tests for SimpleFIN API integration:\n\n1. Documentation components:\n   - SimpleFIN API overview and capabilities\n   - Authentication and access token management\n   - API endpoints and request formats\n   - Response parsing and data mapping\n   - Error handling and retry strategies\n   - Rate limiting and throttling considerations\n\n2. Test components:\n   - Mock SimpleFIN API server using httptest\n   - Test authentication and token management\n   - Verify request formation for all endpoints\n   - Test response parsing with various data formats\n   - Validate error handling for API failures\n   - Test retry logic and backoff strategies\n\nImplement using the latest HTTP client libraries with context support. Include examples of API requests and responses. Document the mapping between SimpleFIN entities and internal data models. Provide troubleshooting guidance for common API issues.",
+        "testStrategy": "1. Test API client with mock server responses\n2. Verify authentication with various token states\n3. Test request formation with parameter variations\n4. Validate response parsing with sample data\n5. Test error handling with simulated failures\n6. Verify retry logic with controlled response delays",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          4
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Create SimpleFIN API Overview Documentation",
+            "description": "Develop comprehensive documentation covering SimpleFIN API capabilities, endpoints, and general usage patterns",
+            "dependencies": [],
+            "details": "Create detailed documentation that includes: 1) Introduction to SimpleFIN API and its purpose, 2) API capabilities and supported financial data types, 3) High-level architecture and integration flow diagrams, 4) Authentication overview and token lifecycle, 5) Complete endpoint reference with request/response examples, 6) Data model documentation with field descriptions and relationships",
+            "status": "pending",
+            "testStrategy": "Review documentation against official SimpleFIN specifications, validate all example code, and ensure compatibility with the latest API version"
+          },
+          {
+            "id": 2,
+            "title": "Document Authentication and Error Handling Procedures",
+            "description": "Create detailed documentation for authentication flows, error handling strategies, rate limiting, and retry mechanisms",
+            "dependencies": [
+              "10.1"
+            ],
+            "details": "Document the following aspects: 1) Authentication process including token acquisition, storage, and renewal, 2) Error handling patterns with error code reference and resolution steps, 3) Rate limiting considerations and throttling strategies, 4) Retry logic with exponential backoff implementation, 5) Troubleshooting guide for common integration issues, 6) Security best practices for token management",
+            "status": "pending",
+            "testStrategy": "Verify documentation against actual implementation, test all error scenarios described, and ensure retry strategies conform to best practices"
+          },
+          {
+            "id": 3,
+            "title": "Implement Mock SimpleFIN API Server",
+            "description": "Develop a mock server using httptest that simulates SimpleFIN API responses for testing purposes",
+            "dependencies": [],
+            "details": "Create a mock server implementation that: 1) Simulates all SimpleFIN API endpoints, 2) Provides configurable response scenarios (success, errors, timeouts), 3) Validates incoming request formats and authentication, 4) Returns realistic sample data matching production formats, 5) Supports controlled failure injection for testing error handling, 6) Includes documentation on usage for testing",
+            "status": "pending",
+            "testStrategy": "Verify mock server responses match official API documentation, test with various request scenarios, and ensure it can simulate all error conditions"
+          },
+          {
+            "id": 4,
+            "title": "Develop Authentication and Request Formation Tests",
+            "description": "Create comprehensive test suite for authentication flows and API request formation",
+            "dependencies": [
+              "10.3"
+            ],
+            "details": "Implement tests covering: 1) Token acquisition and refresh processes, 2) Request formation for all API endpoints, 3) Header construction and authentication token inclusion, 4) Parameter validation and encoding, 5) Request timeout and context handling, 6) Integration with AWS Secrets Manager for credential storage",
+            "status": "pending",
+            "testStrategy": "Use mock server to validate authentication flows, verify request headers and bodies match API specifications, and test boundary conditions for all parameters"
+          },
+          {
+            "id": 5,
+            "title": "Implement Response Parsing and Error Handling Tests",
+            "description": "Create test suite for response parsing, data mapping, and error handling scenarios",
+            "dependencies": [
+              "10.3",
+              "10.4"
+            ],
+            "details": "Develop tests for: 1) Parsing responses from all API endpoints, 2) Mapping SimpleFIN data structures to internal models, 3) Handling various error responses and status codes, 4) Testing retry logic with simulated failures, 5) Validating rate limit handling and backoff strategies, 6) Edge cases including malformed responses and unexpected data formats",
+            "status": "pending",
+            "testStrategy": "Use mock server to generate various response scenarios, verify correct parsing of all data types, and confirm proper error handling for all failure modes"
+          }
+        ]
+      },
+      {
+        "id": 11,
+        "title": "Error Handling and Recovery Documentation and Testing",
+        "description": "Create comprehensive documentation and tests for error handling and recovery mechanisms across all components of the service.",
+        "details": "Develop detailed documentation and tests for error handling and recovery:\n\n1. Documentation components:\n   - Error classification and severity levels\n   - Recovery strategies for different error types\n   - Retry policies and backoff algorithms\n   - Logging and monitoring integration\n   - Alerting thresholds and escalation procedures\n   - Graceful degradation strategies\n\n2. Test components:\n   - Test error handling for all external dependencies\n   - Verify retry logic with simulated failures\n   - Test recovery from database connection issues\n   - Validate logging output for various error scenarios\n   - Test graceful shutdown during error conditions\n   - Verify error reporting and metrics collection\n\nImplement using structured error types with appropriate context information. Include examples of error handling patterns and recovery procedures. Document the relationship between errors and monitoring metrics. Provide troubleshooting decision trees for common failure scenarios.",
+        "testStrategy": "1. Inject failures in all external dependencies\n2. Verify retry behavior with controlled failure durations\n3. Test recovery from various error conditions\n4. Validate logging output for diagnostic value\n5. Test graceful degradation with partial system availability\n6. Verify metrics collection for error monitoring",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Develop Error Classification and Documentation",
+            "description": "Create comprehensive documentation for error classification, severity levels, and recovery strategies across all service components.",
+            "dependencies": [],
+            "details": "Document the complete error taxonomy including: error codes and their meanings, severity classification (critical, high, medium, low), impact assessment guidelines, and appropriate recovery strategies for each error type. Include detailed examples of structured error types with context information. Create decision trees for troubleshooting common failure scenarios and document the relationship between errors and monitoring metrics.",
+            "status": "pending",
+            "testStrategy": "Validate documentation against actual error scenarios in the codebase. Review with team members to ensure completeness. Verify that all error types across dependencies (AWS SSO, SimpleFIN API, SQLite) are properly classified."
+          },
+          {
+            "id": 2,
+            "title": "Document Retry Policies and Graceful Degradation",
+            "description": "Create documentation for retry policies, backoff algorithms, and graceful degradation strategies for all service components.",
+            "dependencies": [
+              "11.1"
+            ],
+            "details": "Document all retry policies including: maximum retry attempts, backoff algorithms (linear, exponential, jittered), timeout configurations, and circuit breaker patterns. Detail graceful degradation strategies for partial system availability scenarios. Include configuration parameters for tuning retry behavior. Provide examples of implementing these patterns in Go with appropriate context.",
+            "status": "pending",
+            "testStrategy": "Review documentation against existing retry implementations. Verify that all external dependencies have documented retry strategies. Ensure graceful degradation paths are clearly defined for all critical service components."
+          },
+          {
+            "id": 3,
+            "title": "Implement Error Handling Tests for External Dependencies",
+            "description": "Develop and implement tests for error handling with all external dependencies including AWS SSO, SimpleFIN API, and database connections.",
+            "dependencies": [
+              "11.1",
+              "11.2"
+            ],
+            "details": "Create test suites that validate error handling for all external dependencies: AWS SSO authentication failures, SimpleFIN API errors, database connection issues, and configuration problems. Use mocks to simulate various failure modes. Test retry logic with controlled failure durations. Verify that errors are properly propagated, transformed, and logged. Ensure that appropriate recovery actions are taken based on error type and severity.",
+            "status": "pending",
+            "testStrategy": "Use dependency injection and mocks to simulate failures. Test with various error scenarios including timeouts, connection failures, authentication errors, and malformed responses. Verify retry behavior matches documented policies."
+          },
+          {
+            "id": 4,
+            "title": "Implement Logging and Monitoring Integration Tests",
+            "description": "Create tests to validate logging output, metrics collection, and alerting integration for error scenarios.",
+            "dependencies": [
+              "11.3"
+            ],
+            "details": "Develop tests that verify logging and monitoring integration: validate log output format and content for various error scenarios, verify metrics collection for error counts and types, test alerting thresholds and escalation procedures. Ensure that logs contain sufficient context for troubleshooting. Test that metrics accurately reflect system health during error conditions. Verify that alerts are triggered appropriately based on error severity and frequency.",
+            "status": "pending",
+            "testStrategy": "Use log capture techniques to validate log output. Test metrics collection with mock exporters. Verify alert triggering with simulated error conditions at different thresholds. Ensure correlation between logs, metrics, and alerts for the same error scenarios."
+          },
+          {
+            "id": 5,
+            "title": "Test Graceful Shutdown and Recovery Procedures",
+            "description": "Implement tests for graceful shutdown during error conditions and recovery procedures after system failures.",
+            "dependencies": [
+              "11.3",
+              "11.4"
+            ],
+            "details": "Create test scenarios for graceful shutdown and recovery: test proper resource cleanup during shutdown triggered by critical errors, verify state persistence and recovery after failures, validate system behavior during partial outages, test recovery from database corruption or connection loss. Ensure that the system can recover to a consistent state after various failure scenarios. Test that in-flight operations are properly handled during shutdown.",
+            "status": "pending",
+            "testStrategy": "Use controlled process termination to test shutdown procedures. Simulate database failures and verify recovery. Test with concurrent operations during shutdown. Verify that system state is consistent after recovery from various failure modes."
+          }
+        ]
+      },
+      {
+        "id": 12,
+        "title": "Final Validation and Documentation Consistency Check",
+        "description": "Perform comprehensive validation of all documentation and tests to ensure consistency, accuracy, and completeness.",
+        "details": "Conduct final validation of all documentation and tests:\n\n1. Documentation validation:\n   - Verify README.md accuracy against current implementation\n   - Check consistency across all documentation sections\n   - Validate all code examples and commands\n   - Ensure all configuration options are documented\n   - Verify troubleshooting guidance for common issues\n   - Check for outdated references or deprecated features\n\n2. Test validation:\n   - Run all tests to verify passing status\n   - Generate consolidated coverage report\n   - Verify test coverage meets >90% target\n   - Check for test gaps in error scenarios\n   - Validate integration test environment setup\n   - Ensure CI pipeline correctly executes all tests\n\n3. Consistency checks:\n   - Verify documentation matches implementation\n   - Check test assertions against documented behavior\n   - Validate error messages against documentation\n   - Ensure configuration examples match actual options\n   - Verify API documentation against actual endpoints\n\nImplement documentation linting using tools like markdownlint. Use go-critic or similar tools for code quality validation. Create documentation-to-code traceability matrix to ensure complete coverage.",
+        "testStrategy": "1. Perform documentation review with multiple team members\n2. Execute all tests in clean environment\n3. Verify documentation examples with actual execution\n4. Test installation and setup following documentation only\n5. Validate troubleshooting procedures against induced failures\n6. Generate final coverage report and quality metrics",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11
+        ],
+        "status": "pending",
+        "subtasks": [
+          {
+            "id": 1,
+            "title": "Documentation Validation and Linting",
+            "description": "Verify README.md accuracy and consistency across all documentation sections, implement documentation linting using markdownlint.",
+            "dependencies": [],
+            "details": "Perform comprehensive documentation validation by: 1) Verifying README.md content against current implementation, 2) Checking consistency across all documentation sections, 3) Validating all code examples and commands, 4) Ensuring all configuration options are documented, 5) Implementing markdownlint for automated documentation quality checks, 6) Checking for outdated references or deprecated features.",
+            "status": "pending",
+            "testStrategy": "Run markdownlint against all documentation files, manually verify code examples by executing them in a clean environment, cross-reference documentation with actual implementation, have multiple team members review documentation for clarity and accuracy."
+          },
+          {
+            "id": 2,
+            "title": "Test Suite Validation and Coverage Analysis",
+            "description": "Run all tests to verify passing status, generate consolidated coverage report, and ensure test coverage meets >90% target.",
+            "dependencies": [
+              "12.1"
+            ],
+            "details": "Execute comprehensive test validation by: 1) Running all unit, integration, and end-to-end tests to verify passing status, 2) Generating consolidated coverage report using Go's built-in coverage tools, 3) Verifying test coverage meets >90% target across all packages, 4) Checking for test gaps in error scenarios, 5) Validating that the CI pipeline correctly executes all tests.",
+            "status": "pending",
+            "testStrategy": "Execute tests in a clean environment, analyze coverage reports to identify gaps, verify that edge cases and error conditions are properly tested, ensure all test dependencies are properly documented."
+          },
+          {
+            "id": 3,
+            "title": "Code-to-Documentation Consistency Verification",
+            "description": "Create documentation-to-code traceability matrix and verify documentation matches implementation across all components.",
+            "dependencies": [
+              "12.1",
+              "12.2"
+            ],
+            "details": "Implement systematic consistency checks between code and documentation by: 1) Creating a documentation-to-code traceability matrix, 2) Verifying test assertions against documented behavior, 3) Validating error messages against documentation, 4) Ensuring configuration examples match actual options, 5) Verifying API documentation against actual endpoints, 6) Using go-critic or similar tools for code quality validation.",
+            "status": "pending",
+            "testStrategy": "Compare API signatures with documentation, verify error messages match what's documented, test configuration examples from documentation in isolation, trace each documented feature to its implementation and tests."
+          },
+          {
+            "id": 4,
+            "title": "Integration Component Validation",
+            "description": "Validate documentation and tests for key integration components: AWS SSO, SimpleFIN API, and SQLite database.",
+            "dependencies": [
+              "12.3"
+            ],
+            "details": "Perform focused validation of integration components by: 1) Verifying AWS SSO authentication documentation against implementation, 2) Validating SimpleFIN API integration documentation and tests, 3) Checking SQLite database documentation for schema accuracy, 4) Ensuring all integration test environment setups are correctly documented, 5) Validating troubleshooting guidance for common integration issues.",
+            "status": "pending",
+            "testStrategy": "Test each integration component following only the documentation, verify error handling matches documented troubleshooting steps, validate integration test environment setup procedures, ensure all configuration options are properly documented."
+          },
+          {
+            "id": 5,
+            "title": "Final Consolidated Report Generation",
+            "description": "Generate comprehensive validation report documenting findings, fixes, and final state of documentation and test coverage.",
+            "dependencies": [
+              "12.1",
+              "12.2",
+              "12.3",
+              "12.4"
+            ],
+            "details": "Create final validation report by: 1) Consolidating findings from all validation activities, 2) Documenting any inconsistencies found and fixes applied, 3) Providing final test coverage metrics with analysis, 4) Including documentation quality assessment, 5) Generating summary of traceability between documentation, code, and tests, 6) Creating recommendations for future documentation and testing improvements.",
+            "status": "pending",
+            "testStrategy": "Review report with multiple team members, verify all identified issues have been addressed, ensure report provides clear metrics on documentation quality and test coverage."
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created": "2025-09-02T23:05:01.900Z",
+      "updated": "2025-09-02T23:28:40.218Z",
+      "description": "Tasks for documentation-enhancement context"
+    }
+  }
+}
